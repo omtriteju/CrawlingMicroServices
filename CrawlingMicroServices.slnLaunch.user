@@ -1,0 +1,22 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "CanadaPayrollService\\CanadaPayrollService.csproj",
+        "Action": "Start",
+        "DebugTarget": "Container (Dockerfile)"
+      },
+      {
+        "Path": "APIGateway\\APIGateway.csproj",
+        "Action": "Start",
+        "DebugTarget": "Container (Dockerfile)"
+      },
+      {
+        "Path": "docker-compose.dcproj",
+        "Action": "Start",
+        "DebugTarget": "Docker Compose"
+      }
+    ]
+  }
+]

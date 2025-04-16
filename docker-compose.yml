@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  canadapayrollservice:
+    container_name: canadapayrollservice
+    image: ${DOCKER_REGISTRY-}canadapayrollservice
+    build:
+      context: .
+      dockerfile: CanadaPayrollService/Dockerfile
+    depends_on:
+      - mysql
+      - mongo
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__spfcon=server=54.209.77.138;Database=spf_payroll;port=3306;user=payroll_dev;password=payrolldev@1234;AllowUserVariables=True;sslMode=Required
+      - MongoDB__ConnectionString=mongodb://payrolldevuser:payrolldev123@34.204.63.200:27017/spf_payroll
+    ports:
+      - "32768:8082"
+
+  apigateway:
+    container_name: apigateway
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    depends_on:
+      - canadapayrollservice
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "32770:8080"
+
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: payrolldev@1234
+      MYSQL_DATABASE: spf_payroll
+      MYSQL_USER: payroll_dev
+      MYSQL_PASSWORD: payrolldev@1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mysql_data:
+  mongo_data:
